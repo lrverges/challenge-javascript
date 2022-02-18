@@ -33,6 +33,11 @@ const {
 // < 16
 
 function exponencial(exp) {
+    
+
+    return function (x){
+        return x**exp;
+    }
 
 }
 
@@ -68,10 +73,18 @@ function exponencial(exp) {
 // El retorno de la funcion 'direcciones' debe ser 'SEN', ya que el destino se encuentra
 // haciendo los movimientos SUR->ESTE->NORTE
 // Aclaraciones: el segundo parametro que recibe la funcion ('direccion') puede ser pasado vacio (null)
-
 function direcciones(laberinto) {
-
-}
+    let direccion = ""
+    if( !laberinto) return '';
+    for (var key in laberinto) {
+        if (laberinto[key]==='destino') 
+            return (key + direccion);    
+        if(typeof laberinto[key]==='object'){          
+           direccion = key + direcciones(laberinto[key])
+        }
+    }   
+    return direccion;   
+    }
 
 
 // EJERCICIO 3
@@ -88,6 +101,16 @@ function direcciones(laberinto) {
 // deepEqualArrays([0,1,[[0,1,2],1,2]], [0,1,[[0,1,2],1,2]]) => true
 
 function deepEqualArrays(arr1, arr2) {
+    if(arr1.length!==arr2.length) return false
+for(let i=0;i<arr1.length;i++){
+    if(Array.isArray(arr1[i]) && Array.isArray(arr2[i])){
+        return deepEqualArrays(arr1[i],arr2[i])
+    } else
+    if(arr1[i]!==arr2[i]){
+        return false
+    }
+    return true
+}
 
 }
 
@@ -139,9 +162,33 @@ OrderedLinkedList.prototype.print = function(){
 // < 'head --> 5 --> 3 --> 1 --> null'
 //               4
 OrderedLinkedList.prototype.add = function(val){
-    
-}
+  let node = new Node(val);  
 
+  if(this.head === null){
+  	// cuando la lista esta vacia
+  	this.head = node; 
+  }else{
+  	// cuando hay al menos un nodo en la lista
+  	let current = this.head; 
+  	while(current.next && val > current.value){
+        
+  		current = current.next; 
+  	}
+      if(!current.next)
+  	current.next = node; 
+      else {
+          node.next = current.next
+          current.next = node;
+      }
+  }
+  return node;
+};   
+//let ll = new OrderedLinkedList()
+//console.log(ll.add(5))
+//let ll2 = new OrderedLinkedList()
+//ll2.head = new Node(5)
+//expect(ll).to.be.deep.equal(ll2)
+//console.log(ll)
 
 // EJERCICIO 5
 // Crea el metodo 'removeHigher' que deve devolver el valor mas alto de la linked list 
@@ -159,9 +206,45 @@ OrderedLinkedList.prototype.add = function(val){
 // < null
 
 OrderedLinkedList.prototype.removeHigher = function(){
+    if(this.head === null) return null;
+    if(this.head.next === null) {
+        console.log(this.head + 'solo hay un nodo')
+        let aux = this.head.value
+        this.head = null
+        return aux;
+    }
+    if(this.head)
+    let pointer = this.head
+    let max = this.head
+    console.log(max.value + 'valor max inicial')
     
+    while (pointer.next) {
+        if(pointer.next.value > max.value){
+          //  console.log(pointer.next.value + 'pointer.next.value')
+          //  console.log(max.value + 'max.value')    
+        max = pointer;
+        console.log(max.next.value)
+        }
+        pointer = pointer.next;
+    }
+    aux = max.next.value;
+    if(max.next.next !== null){
+        max.next = max.next.next
+       
+    }
+    max.next = null;
+    
+    console.log(aux)
+    return aux
 }
 
+            let ll = new OrderedLinkedList()
+            ll.head = new Node(5)
+            ll.head.next = new Node(4)
+            ll.head.next.next = new Node(1)
+            console.log(ll.removeHigher()+'eliminado')
+            //console.log(ll.removeHigher())
+            //console.log(ll.removeHigher())
 
 // EJERCICIO 6
 // Crea el metodo 'removeLower' que deve devolver el valor mas bajo de la linked list 
